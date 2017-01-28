@@ -62,18 +62,17 @@ class StatementRelatedManager(object):
     def add(self, statement):
         self.statements.append(statement)
         self.conversation.save()
-        
 
 
 class Conversation(ConversationModelMixin):
     """
-    A single chat session.
+    A conversation is an ordered collection of statements.
     """
 
     objects = None
 
     def __init__(self, **kwargs):
-        # A unique identifier for the chat session
+        # A unique identifier for the conversation
         self.uuid = uuid.uuid1()
         self.id = kwargs.get('id', str(self.uuid))
 
@@ -86,7 +85,7 @@ class Conversation(ConversationModelMixin):
 
 class ConversationManager(object):
     """
-    Object to hold and manage multiple chat sessions.
+    Object to hold and manage conversation.
     """
 
     def __init__(self, storage):
@@ -94,17 +93,17 @@ class ConversationManager(object):
 
     def create(self):
         """
-        Add a new chat session.
+        Create a new conversation.
         """
         conversation = self.storage.Conversation()
         conversation.save()
         return conversation
 
-    def get(self, session_id, default=None):
+    def get(self, conversation_id, default=None):
         """
-        Return a session given a unique identifier.
+        Return a conversation given a unique identifier.
         """
-        results = self.storage.filter(self.storage.Conversation, id=session_id)
+        results = self.storage.filter(self.storage.Conversation, id=conversation_id)
         if results:
             return results[0]
         else:
